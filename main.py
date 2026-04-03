@@ -439,11 +439,14 @@ class Music(commands.Cog):
             return vc
         except Exception as e:
             logger.error(f'Voice connect error: {e}')
+            msg = '❌ Could not connect to the voice channel. Please try again.'
             try:
-                if ctx.interaction and not ctx.interaction.response.is_done():
-                    await ctx.interaction.response.send_message(f'Failed to join: {e}')
+                if ctx.interaction and ctx.interaction.response.is_done():
+                    await ctx.interaction.followup.send(msg)
+                elif ctx.interaction:
+                    await ctx.interaction.response.send_message(msg)
                 else:
-                    await ctx.send(f'Failed to join: {e}')
+                    await ctx.send(msg)
             except Exception:
                 pass
             return None
